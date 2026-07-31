@@ -2,6 +2,7 @@ package com.cafeteca.nebula;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
@@ -11,11 +12,13 @@ import org.springframework.test.context.TestPropertySource;
         "spring.datasource.username=sa",
         "spring.datasource.password=",
         "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
-        "spring.jpa.hibernate.ddl-auto=create-drop"
+        "spring.jpa.hibernate.ddl-auto=create-drop",
+        "spring.jpa.defer-datasource-initialization=true"
 })
 class CafetecaNebulaApplicationTests {
 
     @Test
+    @WithMockUser
     void contextLoads() {
     }
 
