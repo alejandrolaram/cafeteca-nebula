@@ -19,21 +19,29 @@ public class Prestamo {
     @JoinColumn(name = "libro_id", nullable = false)
     private Libro libro;
 
-    @Column(nullable = false)
     private LocalDate fechaPrestamo;
-
     private LocalDate fechaDevolucion;
+    private LocalDate fechaLimite;
 
-    @Column(nullable = false)
-    private String estado; // "ACTIVO", "DEVUELTO", "RETRASADO"
+    private String estado; // "ACTIVO", "DEVUELTO"
 
+    // 1. Constructor vacío (requerido por JPA/Hibernate)
     public Prestamo() {}
 
+    // 2. Constructor con los 4 parámetros que exige PrestamoService.java
     public Prestamo(Cliente cliente, Libro libro, LocalDate fechaPrestamo, String estado) {
         this.cliente = cliente;
         this.libro = libro;
         this.fechaPrestamo = fechaPrestamo;
+        this.fechaLimite = fechaPrestamo != null ? fechaPrestamo.plusDays(7) : null;
         this.estado = estado;
+    }
+
+    // Método para saber si está retrasado actualmente
+    public boolean isRetrasado() {
+        return "ACTIVO".equalsIgnoreCase(this.estado)
+                && this.fechaLimite != null
+                && LocalDate.now().isAfter(this.fechaLimite);
     }
 
     // Getters y Setters
@@ -51,6 +59,9 @@ public class Prestamo {
 
     public LocalDate getFechaDevolucion() { return fechaDevolucion; }
     public void setFechaDevolucion(LocalDate fechaDevolucion) { this.fechaDevolucion = fechaDevolucion; }
+
+    public LocalDate getFechaLimite() { return fechaLimite; }
+    public void setFechaLimite(LocalDate fechaLimite) { this.fechaLimite = fechaLimite; }
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
