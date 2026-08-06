@@ -22,7 +22,7 @@
         }
 
         .dashboard-window {
-            width: 480px;
+            width: 640px;
         }
 
         .dashboard-content {
@@ -34,7 +34,7 @@
 
         .actions-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 12px;
             margin-top: 8px;
         }
@@ -123,6 +123,16 @@
                 </div>
                 <a th:href="@{/libros}" style="text-decoration: none;">
                     <button>Ir a Libros</button>
+                </a>
+            </div>
+
+            <div class="action-card">
+                <div>
+                    <h4>Gestión de clientes</h4>
+                    <p>Registrar, editar y administrar el padrón de clientes.</p>
+                </div>
+                <a th:href="@{/clientes}" style="text-decoration: none;">
+                    <button>Ir a Clientes</button>
                 </a>
             </div>
 
