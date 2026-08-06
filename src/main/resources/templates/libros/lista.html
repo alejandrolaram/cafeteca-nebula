@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Libros - Cafeteca Nebula</title>
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    <style>
+        body {
+            background-color: #008080;
+            margin: 0;
+            padding: 20px;
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        *, input, button, select, textarea {
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            font-size: 13px !important;
+        }
+
+        .libros-window {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .window-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #808080;
+            padding-bottom: 10px;
+        }
+
+        .top-nav h2 {
+            margin: 0;
+            font-size: 16px !important;
+            font-weight: bold;
+        }
+
+        .alert-box {
+            padding: 8px 12px;
+            background: #c0c0c0;
+            box-shadow: inset -1px -1px #000000, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            color: #d00000;
+        }
+
+        .alert-success {
+            color: green;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #c0c0c0;
+            box-shadow: inset -1px -1px #000000, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+            font-weight: bold;
+        }
+
+        td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .badge-disponible {
+            color: green;
+            font-weight: bold;
+        }
+
+        .badge-prestado {
+            color: #d00000;
+            font-weight: bold;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="window libros-window">
+    <div class="title-bar">
+        <div class="title-bar-text">
+            Gestión de Libros - Cafeteca Nebula
+        </div>
+        <div class="title-bar-controls">
+            <button aria-label="Minimize"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="window-body window-content">
+        <div class="top-nav">
+            <h2>Gestión de Libros</h2>
+            <a th:href="@{/dashboard}" style="text-decoration: none;">
+                <button style="font-weight: bold;">Volver al Inicio</button>
+            </a>
+        </div>
+
+        <div th:if="${error}" class="alert-box alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${exito}" class="alert-box alert-success">
+            <span th:text="${exito}"></span>
+        </div>
+
+        <fieldset>
+            <legend th:text="${libroEdit.id != null ? 'Editar Libro (ID: ' + libroEdit.id + ')' : 'Registrar Nuevo Libro'}">Registrar Nuevo Libro</legend>
+            <form th:action="@{/libros/guardar}" method="post">
+                <input type="hidden" name="id" th:value="${libroEdit.id}" />
+                <input type="hidden" name="disponible" th:value="${libroEdit.disponible}" />
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label for="titulo">Título:</label>
+                        <input type="text" id="titulo" name="titulo" th:value="${libroEdit.titulo}" placeholder="Ej. Cien Años de Soledad" required />
+                    </div>
+
+                    <div class="field-group">
+                        <label for="autor">Autor:</label>
+                        <input type="text" id="autor" name="autor" th:value="${libroEdit.autor}" placeholder="Ej. Gabriel García Márquez" required />
+                    </div>
+
+                    <div class="field-group">
+                        <label for="isbn">ISBN:</label>
+                        <input type="text" id="isbn" name="isbn" th:value="${libroEdit.isbn}" placeholder="Ej. 9780307474728" />
+                    </div>
+
+                    <div style="display: flex; gap: 4px;">
+                        <button type="submit" style="font-weight: bold; padding: 5px 14px;" th:text="${libroEdit.id != null ? 'Actualizar' : 'Guardar Libro'}">Guardar Libro</button>
+                        <a th:if="${libroEdit.id != null}" th:href="@{/libros}" style="text-decoration: none;">
+                            <button type="button" style="padding: 5px 10px;">Cancelar</button>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+
+        <fieldset>
+            <legend>Catálogo de Libros</legend>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>ISBN</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="libro : ${libros}">
+                        <td th:text="${libro.id}">1</td>
+                        <td th:text="${libro.titulo}">Título del libro</td>
+                        <td th:text="${libro.autor}">Autor del libro</td>
+                        <td th:text="${libro.isbn != null ? libro.isbn : '-'}">-</td>
+                        <td>
+                            <span th:if="${libro.disponible}" class="badge-disponible">DISPONIBLE</span>
+                            <span th:unless="${libro.disponible}" class="badge-prestado">PRESTADO</span>
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                <a th:href="@{/libros(editarId=${libro.id})}" style="text-decoration: none;">
+                                    <button type="button">Editar</button>
+                                </a>
+                                <form th:action="@{/libros/eliminar/{id}(id=${libro.id})}" method="post" style="margin: 0;">
+                                    <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este libro? Se eliminará también su historial de préstamos.');">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(libros)}">
+                        <td colspan="6" style="text-align: center; padding: 12px;">No hay libros registrados actualmente.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="status-bar">
+        <p class="status-bar-field">Usuario: admin</p>
+    </div>
+</div>
+
+</body>
+</html>

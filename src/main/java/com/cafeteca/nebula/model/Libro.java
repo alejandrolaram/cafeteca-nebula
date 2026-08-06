@@ -1,6 +1,8 @@
 package com.cafeteca.nebula.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "libros")
@@ -10,26 +12,16 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String titulo;
-
-    @Column(nullable = false)
     private String autor;
-
-    @Column(unique = true)
     private String isbn;
+    private Boolean disponible = true;
 
-    @Column(nullable = false)
-    private boolean disponible = true;
+    // Relación para permitir eliminación en cascada de préstamos pasados
+    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prestamo> prestamos = new ArrayList<>();
 
     public Libro() {}
-
-    public Libro(String titulo, String autor, String isbn, boolean disponible) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.isbn = isbn;
-        this.disponible = disponible;
-    }
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -44,6 +36,10 @@ public class Libro {
     public String getIsbn() { return isbn; }
     public void setIsbn(String isbn) { this.isbn = isbn; }
 
-    public boolean isDisponible() { return disponible; }
-    public void setDisponible(boolean disponible) { this.disponible = disponible; }
+    public Boolean getDisponible() { return disponible; }
+    public Boolean isDisponible() { return disponible; }
+    public void setDisponible(Boolean disponible) { this.disponible = disponible; }
+
+    public List<Prestamo> getPrestamos() { return prestamos; }
+    public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
 }
