@@ -1,6 +1,8 @@
 package com.cafeteca.nebula.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clientes")
@@ -10,13 +12,12 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String nombre;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
     private String telefono;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prestamo> prestamos = new ArrayList<>();
 
     public Cliente() {}
 
@@ -38,4 +39,7 @@ public class Cliente {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public List<Prestamo> getPrestamos() { return prestamos; }
+    public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
 }
