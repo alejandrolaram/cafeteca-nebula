@@ -3,111 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Préstamos - Cafeteca Nebula</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    <style>
+        body {
+            background-color: #008080;
+            margin: 0;
+            padding: 20px;
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        *, input, button, select, textarea {
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            font-size: 13px !important;
+        }
+
+        .prestamos-window {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .window-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #808080;
+            padding-bottom: 10px;
+        }
+
+        .top-nav h2 {
+            margin: 0;
+            font-size: 16px !important;
+            font-weight: bold;
+        }
+
+        .alert-box {
+            padding: 8px 12px;
+            background: #c0c0c0;
+            box-shadow: inset -1px -1px #000000, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            color: #d00000;
+        }
+
+        .alert-success {
+            color: green;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-group select, .field-group input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #c0c0c0;
+            box-shadow: inset -1px -1px #000000, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+            font-weight: bold;
+        }
+
+        td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr.row-retrasado td {
+            background-color: #ffe6e6;
+        }
+
+        .badge-retrasado {
+            color: #d00000;
+            font-weight: bold;
+        }
+
+        .badge-devuelto {
+            color: green;
+            font-weight: bold;
+        }
+
+        .badge-activo {
+            color: #000080;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container my-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📋 Gestión de Préstamos</h2>
-        <a href="/" class="btn btn-secondary">Volver al Inicio</a>
-    </div>
-
-    <!-- Mensajes de Alerta -->
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <span th:text="${error}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <span th:text="${exito}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <!-- Registrar Nuevo Préstamo -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Registrar Nuevo Préstamo</h5>
+<div class="window prestamos-window">
+    <div class="title-bar">
+        <div class="title-bar-text">
+            Gestión de Préstamos - Cafeteca Nebula
         </div>
-        <div class="card-body">
-            <form th:action="@{/prestamos/guardar}" method="post" class="row g-3 align-items-end">
-                <div class="col-md-5">
-                    <label for="clienteId" class="form-label">Cliente</label>
-                    <select id="clienteId" name="clienteId" class="form-select" required>
-                        <option value="" disabled selected>Selecciona un cliente...</option>
-                        <option th:each="cliente : ${clientes}"
-                                th:value="${cliente.id}"
-                                th:text="${cliente.nombre}">
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-5">
-                    <label for="libroId" class="form-label">Libro Disponible</label>
-                    <select id="libroId" name="libroId" class="form-select" required>
-                        <option value="" disabled selected>Selecciona un libro...</option>
-                        <option th:each="libro : ${libros}"
-                                th:value="${libro.id}"
-                                th:text="${libro.titulo}">
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success w-100">Prestar Libro</button>
+        <div class="title-bar-controls">
+            <button aria-label="Minimize"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div class="window-body window-content">
+        <div class="top-nav">
+            <h2>Gestión de Préstamos</h2>
+            <a th:href="@{/dashboard}" style="text-decoration: none;">
+                <button style="font-weight: bold;">Volver al Inicio</button>
+            </a>
+        </div>
+
+        <div th:if="${error}" class="alert-box alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${exito}" class="alert-box alert-success">
+            <span th:text="${exito}"></span>
+        </div>
+
+        <fieldset>
+            <legend>Registrar Nuevo Préstamo</legend>
+            <form th:action="@{/prestamos/guardar}" method="post">
+                <div class="form-row">
+                    <div class="field-group">
+                        <label for="clienteId">Cliente</label>
+                        <select id="clienteId" name="clienteId" required>
+                            <option value="" disabled selected>Selecciona un cliente...</option>
+                            <option th:each="cliente : ${clientes}"
+                                    th:value="${cliente.id}"
+                                    th:text="${cliente.nombre}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="libroId">Libro Disponible</label>
+                        <select id="libroId" name="libroId" required>
+                            <option value="" disabled selected>Selecciona un libro...</option>
+                            <option th:each="libro : ${libros}"
+                                    th:value="${libro.id}"
+                                    th:text="${libro.titulo}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button type="submit" style="font-weight: bold; padding: 5px 14px;">Prestar Libro</button>
+                    </div>
                 </div>
             </form>
-        </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Historial de Préstamos</legend>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Libro</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Límite</th>
+                        <th>Fecha Devolución</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${prestamos}" th:class="${p.isRetrasado()} ? 'row-retrasado' : ''">
+                        <td th:text="${p.id}">1</td>
+                        <td th:text="${p.cliente.nombre}">Cliente</td>
+                        <td th:text="${p.libro.titulo}">Libro</td>
+                        <td th:text="${p.fechaPrestamo}">2026-08-04</td>
+                        <td th:text="${p.fechaLimite}">2026-08-11</td>
+                        <td th:text="${p.fechaDevolucion != null ? p.fechaDevolucion : '-'}">-</td>
+                        <td>
+                            <span th:if="${p.isRetrasado()}" class="badge-retrasado">RETRASADO</span>
+                            <span th:if="${p.estado == 'ACTIVO' and !p.isRetrasado()}" class="badge-activo">ACTIVO</span>
+                            <span th:if="${p.estado == 'DEVUELTO'}" class="badge-devuelto">DEVUELTO</span>
+                        </td>
+                        <td>
+                            <form th:if="${p.estado == 'ACTIVO'}" th:action="@{/prestamos/devolver/{id}(id=${p.id})}" method="post" style="margin: 0;">
+                                <button type="submit">Devolver</button>
+                            </form>
+                            <span th:if="${p.estado == 'DEVUELTO'}" style="color: #666;">Completado</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(prestamos)}">
+                        <td colspan="8" style="text-align: center; padding: 12px;">No hay préstamos registrados actualmente.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
     </div>
 
-    <!-- Historial de Préstamos -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0">Historial de Préstamos</h5>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-striped align-middle mb-0">
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Libro</th>
-                    <th>Fecha Préstamo</th>
-                    <th>Fecha Límite</th>
-                    <th>Fecha Devolución</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="p : ${prestamos}" th:classappend="${p.isRetrasado()} ? 'table-danger' : ''">
-                    <td th:text="${p.id}">1</td>
-                    <td th:text="${p.cliente.nombre}">Cliente</td>
-                    <td th:text="${p.libro.titulo}">Libro</td>
-                    <td th:text="${p.fechaPrestamo}">2026-08-04</td>
-                    <td th:text="${p.fechaLimite}">2026-08-11</td>
-                    <td th:text="${p.fechaDevolucion != null ? p.fechaDevolucion : '-'}">-</td>
-                    <td>
-                        <!-- Regla 3: Bandera visual roja para Retrasados -->
-                        <span th:if="${p.isRetrasado()}" class="badge bg-danger">RETRASADO</span>
-                        <span th:if="${p.estado == 'ACTIVO' and !p.isRetrasado()}" class="badge bg-warning text-dark">ACTIVO</span>
-                        <span th:if="${p.estado == 'DEVUELTO'}" class="badge bg-success">DEVUELTO</span>
-                    </td>
-                    <td>
-                        <form th:if="${p.estado == 'ACTIVO'}" th:action="@{/prestamos/devolver/{id}(id=${p.id})}" method="post">
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Devolver</button>
-                        </form>
-                        <span th:if="${p.estado == 'DEVUELTO'}" class="text-muted">Completado</span>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(prestamos)}">
-                    <td colspan="8" class="text-center py-3">No hay préstamos registrados actualmente.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="status-bar">
+        <p class="status-bar-field">Usuario: admin</p>
     </div>
-
 </div>
 
-<script href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

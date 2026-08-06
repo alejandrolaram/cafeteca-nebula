@@ -3,62 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <title>Cafeteca Nebula - Iniciar Sesión</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/style/bootstrap/5.3.0/css/bootstrap.min.css"
-          th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
     <style>
         body {
-            background-color: #1a1a2e;
-            color: #e0e0e0;
+            background-color: #008080;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .card-login {
-            background-color: #16213e;
-            border: 1px solid #0f3460;
-            border-radius: 12px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+
+        *, input, button, select, textarea {
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            font-size: 13px !important;
         }
-        .btn-nebula {
-            background-color: #e94560;
-            color: #fff;
-            border: none;
+
+        .login-window {
+            width: 380px;
         }
-        .btn-nebula:hover {
-            background-color: #d63447;
-            color: #fff;
+
+        .login-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .error-msg {
+            color: #d00000;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .title-bar-text {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<div class="card-login">
-    <h3 class="text-center mb-4 font-weight-bold" style="color: #e94560;">Cafeteca Nebula</h3>
-    <p class="text-center text-muted mb-4">Acceso de Administración</p>
-
-    <div th:if="${param.error}" class="alert alert-danger py-2 text-center" role="alert">
-        Usuario o contraseña incorrectos.
-    </div>
-    <div th:if="${param.logout}" class="alert alert-info py-2 text-center" role="alert">
-        Has cerrado sesión correctamente.
-    </div>
-
-    <form th:action="@{/login}" method="post">
-        <div class="mb-3">
-            <label for="username" class="form-label">Usuario</label>
-            <input type="text" id="username" name="username" class="form-control" required autofocus placeholder="admin">
+<div class="window login-window">
+    <div class="title-bar">
+        <div class="title-bar-text">
+            Acceso al Sistema - Cafeteca Nebula
         </div>
-        <div class="mb-4">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
+        <div class="title-bar-controls">
+            <button aria-label="Minimize"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
         </div>
-        <button type="submit" class="btn btn-nebula w-100 py-2">Ingresar</button>
-    </form>
+    </div>
+
+    <div class="window-body login-content">
+        <div style="text-align: center; margin-bottom: 8px;">
+            <h3 style="margin: 0; font-size: 16px !important; font-weight: bold;">Cafeteca Nebula</h3>
+            <p style="margin: 4px 0 0 0; color: #444;">Ingrese sus credenciales de administrador</p>
+        </div>
+
+        <div th:if="${param.error}" class="error-msg">
+            Usuario o contraseña incorrectos.
+        </div>
+        <div th:if="${param.logout}" class="error-msg" style="color: green;">
+            Ha cerrado sesión correctamente.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required autofocus style="width: 100%; box-sizing: border-box;" />
+            </div>
+
+            <div class="form-group" style="margin-top: 8px;">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required style="width: 100%; box-sizing: border-box;" />
+            </div>
+
+            <div class="actions">
+                <button type="submit" style="font-weight: bold; padding: 4px 16px;">Ingresar</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 </body>

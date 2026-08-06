@@ -3,23 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <title>Cafeteca Nebula - Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    <style>
+        body {
+            background-color: #008080;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        *, input, button, select, textarea {
+            font-family: "Tahoma", "MS Sans Serif", Segoe UI, sans-serif !important;
+            font-size: 13px !important;
+        }
+
+        .dashboard-window {
+            width: 480px;
+        }
+
+        .dashboard-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .action-card {
+            background: #c0c0c0;
+            padding: 14px;
+            box-shadow: inset -1px -1px #000000, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .action-card h4 {
+            margin: 0;
+            color: #000080;
+            font-size: 14px !important;
+            font-weight: bold;
+        }
+
+        .action-card p {
+            margin: 0;
+            color: #333;
+            font-size: 12px !important;
+            line-height: 1.3;
+        }
+
+        .action-card button {
+            width: 100%;
+            font-weight: bold;
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .header-section {
+            border-bottom: 1px solid #808080;
+            padding-bottom: 10px;
+        }
+
+        .header-section h2 {
+            margin: 0 0 4px 0;
+            font-size: 16px !important;
+            font-weight: bold;
+        }
+
+        .header-section p {
+            margin: 0;
+            color: #444;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px solid #ffffff;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-dark bg-dark px-4">
-    <a class="navbar-brand font-weight-bold" href="#">Cafeteca Nebula</a>
-    <form th:action="@{/logout}" method="post" class="d-inline">
-        <button type="submit" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
-    </form>
-</nav>
+<div class="window dashboard-window">
+    <div class="title-bar">
+        <div class="title-bar-text">
+            Cafeteca Nebula - Panel de Administración
+        </div>
+        <div class="title-bar-controls">
+            <button aria-label="Minimize"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+        </div>
+    </div>
 
-<div class="container mt-5">
-    <div class="jumbotron bg-white p-5 rounded shadow-sm">
-        <h1 class="display-5 text-primary">¡Bienvenido a Cafeteca Nebula!</h1>
-        <p class="lead">Sistema de gestión de biblioteca y control de préstamos.</p>
-        <hr class="my-4">
-        <p>Módulo de seguridad configurado correctamente con Spring Security.</p>
+    <div class="window-body dashboard-content">
+        <div class="header-section">
+            <h2>Gestión de Biblioteca</h2>
+            <p>Seleccione la opción a la que desea ingresar:</p>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card">
+                <div>
+                    <h4>Catálogo de libros</h4>
+                    <p>Agregar, modificar o consultar libros en la biblioteca.</p>
+                </div>
+                <a th:href="@{/libros}" style="text-decoration: none;">
+                    <button>Ir a Libros</button>
+                </a>
+            </div>
+
+            <div class="action-card">
+                <div>
+                    <h4>Control de préstamos</h4>
+                    <p>Registrar nuevos préstamos y gestionar devoluciones.</p>
+                </div>
+                <a th:href="@{/prestamos}" style="text-decoration: none;">
+                    <button>Ir a Préstamos</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <p class="status-bar-field">Usuario: admin</p>
     </div>
 </div>
 
